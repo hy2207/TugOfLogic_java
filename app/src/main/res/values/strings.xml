@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TugOfLogic_java</string>
+    <string name="remain_time">TIME REMAINING TO VOTE: %01$d : %02$d</string>
+    <string name="remain_time2">REMAINING TIME: %01$d : %02$d</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_rip">Reason In Play (Bout Number: %1$d)</string>
 </resources>
