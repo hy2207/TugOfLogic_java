@@ -8,10 +8,15 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class DB_Player {
-    public String name;
-    public Boolean strawResult;
-    public Boolean finalResult;
+
     public String email;
+    public String name;
+    public String strawResult;
+    public String finalResult;
+    public Integer numPlayer;
+    public String votingRip;
+    public String ground;
+    public String comment;
 
     public DB_Player(){
 
@@ -26,11 +31,15 @@ public class DB_Player {
         this.email = email;
     }
 
-    public DB_Player(String name, Boolean strawResult, Boolean finalResult, String email){
+    public DB_Player(String email, String name, String strawResult, String finalResult, Integer numPlayer, String votingRip, String ground, String comment) {
+        this.email = email;
         this.name = name;
         this.strawResult = strawResult;
         this.finalResult = finalResult;
-        this.email = email;
+        this.numPlayer = numPlayer;
+        this.votingRip = votingRip;
+        this.ground = ground;
+        this.comment = comment;
     }
 
     @Exclude

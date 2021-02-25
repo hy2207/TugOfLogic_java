@@ -5,16 +5,21 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class DB_MainClaim {
     public String mc;
-    public int numConvinced;
-    public int numNotYet;
+    public int numStrawCon;
+    public int numStrawNot;
+    public int numFinalCon;
+    public int numFinalNot;
 
     public DB_MainClaim(){
 
     }
 
-    public DB_MainClaim(String mc, int numConvinced, int numNotYet){
+
+    public DB_MainClaim(String mc, int numStrawCon, int numStrawNot, int numFinalCon, int numFinalNot){
         this.mc = mc;
-        this.numConvinced = numConvinced;
-        this.numNotYet = numNotYet;
+        this.numStrawCon = numStrawCon;
+        this.numStrawNot = numStrawNot;
+        this.numFinalCon = numFinalCon;
+        this.numFinalNot = numFinalNot;
     }
 }
