@@ -13,11 +13,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Purpose: straw poll for students (players)
@@ -29,6 +34,7 @@ public class StrawpollActivity extends AppCompatActivity {
     private RadioButton rb_convinced, rb_not;
     private Button btnSubmitStraw;
 
+    private FirebaseAuth auth;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference mainClaimDB = firebaseDatabase.getReference("MainClaim");
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
@@ -69,6 +75,8 @@ public class StrawpollActivity extends AppCompatActivity {
         btnSubmitStraw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 playerDB.child("id").child("strawResult").setValue(strawResult);
                 if (strawResult == "Convinced"){
                     numConvinced++;
@@ -77,9 +85,12 @@ public class StrawpollActivity extends AppCompatActivity {
                 }
                 mainClaimDB.child("id").child("numConvinced").setValue(numConvinced);
                 mainClaimDB.child("id").child("numNotYet").setValue(numNotYet);
+
+
                 startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
             }
         });
+
         //get time from setting page
         final String timeForm = getString(R.string.remain_time);
         tvRemainTime = findViewById(R.id.txtViewRemainTime);
@@ -130,7 +141,8 @@ public class StrawpollActivity extends AppCompatActivity {
                 for (DataSnapshot child : snapshot.getChildren()){
                     playerInfo = child.getValue(DB_Player.class);
                 }
-                tvPlayerName.setText("Welcome, " + playerInfo.name);
+
+                tvPlayerName.setText("Welcome Player : " + "\n" + playerInfo.name);
 
             }
 
@@ -139,6 +151,16 @@ public class StrawpollActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void updatePlayer(String userId, String name, String email){
+        String key = playerDB.child(userId).getKey();
+        DB_Player player = new DB_Player(name,email);
+        Map<String, Object> playerValue = player.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(key, playerValue);
+
+        playerDB.updateChildren(childUpdates);
 
     }
 }
