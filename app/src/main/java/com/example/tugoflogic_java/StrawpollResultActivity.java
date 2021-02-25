@@ -3,8 +3,10 @@ package com.example.tugoflogic_java;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -44,8 +46,16 @@ public class StrawpollResultActivity extends AppCompatActivity {
         tvMainClaim = findViewById(R.id.txtViewPollResultMC);
 
         barChart = findViewById(R.id.barChartResult);
+        btnStartGame = findViewById(R.id.btnStartGame);
 
         getData();
+
+        btnStartGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(StrawpollResultActivity.this, MainActivity.class));
+            }
+        });
     }
 
     //load Data from firebase
@@ -60,8 +70,8 @@ public class StrawpollResultActivity extends AppCompatActivity {
                     mainClaim = child.getValue(DB_MainClaim.class);
                 }
                 tvMainClaim.setText(mainClaim.mc);
-                entries.add(new BarEntry(1.0f, mainClaim.numConvinced));
-                entries.add(new BarEntry(2.0f, mainClaim.numNotYet));
+                entries.add(new BarEntry(1.0f, mainClaim.numStrawCon));
+                entries.add(new BarEntry(2.0f, mainClaim.numStrawNot));
 
                 BarDataSet barDataSet = new BarDataSet(entries, "Number of Student");
                 initBarDataSet(barDataSet);
@@ -85,13 +95,15 @@ public class StrawpollResultActivity extends AppCompatActivity {
         //Setting the size of the form in the legend
         barDataSet.setFormSize(15f);
         //showing the value of the bar, default true if not set
-//        barDataSet.setDrawValues(false);
+        barDataSet.setDrawValues(false);
         //setting the text size of the value of the bar
-        barDataSet.setValueTextSize(15f);
+//        barDataSet.setValueTextSize(15f);
         //remove the description label text located at the lower right corner
         Description description = new Description();
         description.setEnabled(false);
         barChart.setDescription(description);
+        //hide labels of the axis
+        barChart.getXAxis().setDrawLabels(false);
 
         //setting animation for y-axis, the bar will pop up from 0 to its value within the time we set
         barChart.animateY(1000);

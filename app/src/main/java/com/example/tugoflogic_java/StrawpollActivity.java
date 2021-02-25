@@ -35,7 +35,7 @@ public class StrawpollActivity extends AppCompatActivity {
 
     public Integer numConvinced = 0;
     public Integer numNotYet = 0;
-    public Boolean isConvinced = true;
+    public String strawResult = "Convinced";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +59,9 @@ public class StrawpollActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.strawConvinced){
-                    isConvinced = true;
+                    strawResult = "Convinced";
                 } else {
-                    isConvinced = false;
+                    strawResult = "Established";
                 }
             }
         });
@@ -69,8 +69,8 @@ public class StrawpollActivity extends AppCompatActivity {
         btnSubmitStraw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerDB.child("id").child("strawResult").setValue(isConvinced);
-                if (isConvinced){
+                playerDB.child("id").child("strawResult").setValue(strawResult);
+                if (strawResult == "Convinced"){
                     numConvinced++;
                 } else {
                     numNotYet++;
@@ -112,8 +112,8 @@ public class StrawpollActivity extends AppCompatActivity {
                     mainClaim = child.getValue(DB_MainClaim.class);
                 }
                 tvMainClaim.setText(mainClaim.mc);
-                numConvinced = mainClaim.numConvinced;
-                numNotYet = mainClaim.numNotYet;
+                numConvinced = mainClaim.numStrawCon;
+                numNotYet = mainClaim.numStrawNot;
             }
 
             @Override
