@@ -19,8 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     RadioGroup selectUser;
     boolean isStudent = true;
     TextView playerText;
+    String strawResult = "", finalResult = "", votingRip = "", ground = "", comment = "";
+    long numPlayer = 0;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
@@ -72,13 +77,42 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-                FirebaseUser currentUser = auth.getCurrentUser();
-                assert currentUser != null;
-                final String uuid = currentUser.getUid();
-                final String femail = currentUser.getEmail();
-                final String playerName = userName.getText().toString();
+//        playerDB.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    numPlayer=(snapshot.getChildrenCount());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        FirebaseUser currentUser = auth.getCurrentUser();
+        assert currentUser != null;
+        final String uuid = currentUser.getUid();
 
-        Log.i("Sangmin", "Current : " + currentUser);
+        playerDB.child(uuid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    numPlayer=(snapshot.getChildrenCount());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+//                final String femail = currentUser.getEmail();
+//                final String playerName = userName.getText().toString();
+
+        //Log.i("Sangmin", "Current : " + currentUser);
 
 
         // sign in
@@ -112,7 +146,6 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 login(email,password,name);
-                //updatePlayer(uuid,playerName,femail);
             }
         });
 
@@ -139,7 +172,8 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseUser registerUser = auth.getCurrentUser();
                     assert registerUser != null;
                     String userId = registerUser.getUid();
-                    updatePlayer(userId,name,email);
+                    updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
+                    playerDB.child(String.valueOf(numPlayer+1));
                     startActivity(intent);
                     //getIntent().putExtra("playerNumber", txtView)
                 }else if (task.isSuccessful() && !isStudent){
@@ -154,9 +188,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void updatePlayer(String userId, String name, String email){
+    private void updatePlayer(String userId, String email, String name, String strawResult, String finalResult, long numPlayer, String votingRip, String ground, String comment){
         String key = playerDB.child(userId).getKey();
-        DB_Player player = new DB_Player(name,email);
+        DB_Player player = new DB_Player(email, name, strawResult, finalResult, numPlayer, votingRip, ground, comment);
         Map<String, Object> playerValue = player.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(key, playerValue);

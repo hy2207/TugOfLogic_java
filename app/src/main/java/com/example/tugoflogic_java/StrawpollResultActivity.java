@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -47,6 +48,10 @@ public class StrawpollResultActivity extends AppCompatActivity {
 
         barChart = findViewById(R.id.barChartResult);
         btnStartGame = findViewById(R.id.btnStartGame);
+
+//        Intent intent = getIntent();
+//        String name = intent.getStringExtra("mc");
+//        tvMainClaim.setText(name);
 
         getData();
 

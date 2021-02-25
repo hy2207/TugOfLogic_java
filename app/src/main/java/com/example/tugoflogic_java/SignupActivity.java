@@ -33,6 +33,9 @@ public class SignupActivity extends AppCompatActivity {
     Button regiBtn;
     TextView loginLink;
 
+    String name = "", strawResult = "", finalResult = "", votingRip = "", ground = "", comment = "";
+    long numPlayer = 0;
+
     final String TAG = "SignUp Activity";
 
     @Override
@@ -102,7 +105,7 @@ public class SignupActivity extends AppCompatActivity {
                     assert registerUser != null;
                     String userId = registerUser.getUid();
                     databaseRef = FirebaseDatabase.getInstance().getReference("Player");
-                    createUserOnDB(userId,email);
+                    createUserOnDB(userId,email, name,strawResult,finalResult,numPlayer,votingRip,ground,comment);
                     Toast.makeText(SignupActivity.this, "User created", Toast.LENGTH_SHORT).show();
                 }else {
                     progressBar.setVisibility(View.GONE);
@@ -113,8 +116,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     // store to the database
-    private void createUserOnDB(String userId, String email) {
-        DB_Player player = new DB_Player(email);
+    private void createUserOnDB(String userId, String email, String name, String strawResult, String finalResult, long numPlayer, String votingRip, String ground, String comment) {
+        DB_Player player = new DB_Player(email, name, strawResult, finalResult, numPlayer, votingRip, ground, comment);
         databaseRef.child(userId).setValue(player).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

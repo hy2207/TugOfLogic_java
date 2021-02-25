@@ -36,7 +36,7 @@ public class GamesettingActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("instructorName");
-        instructorName.setText("Welcome " + "\n" +  "Instructor : " + name);
+        instructorName.setText("Welcome Instructor : " +"\n"+ name);
 
 
         btnGoToGameMain.setOnClickListener(new View.OnClickListener() {
@@ -59,14 +59,15 @@ public class GamesettingActivity extends AppCompatActivity {
                         @Override
                         public void onFinish() {
                             countdownTxt.setText("Finished");
+                            startActivity(new Intent(getApplicationContext(), StrawpollResultActivity.class));
                         }
                     }.start();
                 }
 
-//                Intent intentS = new Intent(getApplicationContext(), StrawpollActivity.class);
-//                intentS.putExtra("mc", mainClaim.getText().toString());
 
-
+                Intent intentS = new Intent(getApplicationContext(), StrawpollResultActivity.class);
+                intentS.putExtra("mc", mainClaim.getText().toString());
+                startActivity(intentS);
             }
         });
 

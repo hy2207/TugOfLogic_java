@@ -13,7 +13,7 @@ public class DB_Player {
     public String name;
     public String strawResult;
     public String finalResult;
-    public Integer numPlayer;
+    public long numPlayer;
     public String votingRip;
     public String ground;
     public String comment;
@@ -31,7 +31,7 @@ public class DB_Player {
         this.email = email;
     }
 
-    public DB_Player(String email, String name, String strawResult, String finalResult, Integer numPlayer, String votingRip, String ground, String comment) {
+    public DB_Player(String email, String name, String strawResult, String finalResult, long numPlayer, String votingRip, String ground, String comment) {
         this.email = email;
         this.name = name;
         this.strawResult = strawResult;
@@ -49,6 +49,10 @@ public class DB_Player {
         result.put("strawResult",strawResult);
         result.put("finalResult",finalResult);
         result.put("email",email);
+        result.put("numPlayer",numPlayer);
+        result.put("votingRip",votingRip);
+        result.put("ground",ground);
+        result.put("comment",comment);
 
         return result;
     };

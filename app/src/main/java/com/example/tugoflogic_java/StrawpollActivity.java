@@ -76,11 +76,6 @@ public class StrawpollActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //FirebaseUser currentUser = auth.getCurrentUser();
-//                assert currentUser != null;
-//                final String uuid = currentUser.getUid();
-//                final String email = currentUser.getEmail();
-//                final String playerName = tvPlayerName.getText().toString();
 
                 playerDB.child("id").child("strawResult").setValue(strawResult);
                 if (strawResult == "Convinced"){
@@ -91,11 +86,11 @@ public class StrawpollActivity extends AppCompatActivity {
                 mainClaimDB.child("id").child("numConvinced").setValue(numConvinced);
                 mainClaimDB.child("id").child("numNotYet").setValue(numNotYet);
 
-                //updatePlayer(uuid, playerName, email);
 
                 startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
             }
         });
+
         //get time from setting page
         final String timeForm = getString(R.string.remain_time);
         tvRemainTime = findViewById(R.id.txtViewRemainTime);
@@ -147,7 +142,7 @@ public class StrawpollActivity extends AppCompatActivity {
                     playerInfo = child.getValue(DB_Player.class);
                 }
 
-                tvPlayerName.setText("Welcome, " + playerInfo.name);
+                tvPlayerName.setText("Welcome Player : " + "\n" + playerInfo.name);
 
             }
 
