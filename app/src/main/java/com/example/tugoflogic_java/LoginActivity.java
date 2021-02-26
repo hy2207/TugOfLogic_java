@@ -70,41 +70,29 @@ public class LoginActivity extends AppCompatActivity {
                 switch (checkedId){
                     case R.id.btnInstructor :
                         isStudent = false;
-                        playerNum = 0;
+                       // playerNum = 0;
                         break;
                     case R.id.btnStudent:
                         isStudent = true;
-                        playerNum++;
+                        //playerNum++;
                 }
             }
         });
 
-//        playerDB.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    numPlayer=(snapshot.getChildrenCount());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
         FirebaseUser currentUser = auth.getCurrentUser();
         assert currentUser != null;
         if(currentUser != null){
-            String uuid = currentUser.getUid();
+            final String uuid = currentUser.getUid();
 
-            playerDB.child(uuid).addValueEventListener(new ValueEventListener() {
+            playerDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
                         numPlayer=(snapshot.getChildrenCount());
+                        Log.i("Sangmin", "Current uuid : " + uuid);
+                        Log.i("Sangmin", "Current num player: " + numPlayer);
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -112,23 +100,11 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-
-
-//                final String femail = currentUser.getEmail();
-//                final String playerName = userName.getText().toString();
-
-        //Log.i("Sangmin", "Current : " + currentUser);
-
-
         // sign in
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                FirebaseUser currentUser = auth.getCurrentUser();
-//                assert currentUser != null;
-//                final String uuid = currentUser.getUid();
-//                final String femail = currentUser.getEmail();
-//                final String playerName = userName.getText().toString();
+
 
                 String email = userEmail.getText().toString().trim();
                 String password = userPw.getText().toString().trim();
@@ -180,11 +156,16 @@ public class LoginActivity extends AppCompatActivity {
                     updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
                     playerDB.child(String.valueOf(numPlayer+1));
                     startActivity(intent);
-                    //getIntent().putExtra("playerNumber", txtView)
                 }else if (task.isSuccessful() && !isStudent){
                     Toast.makeText(LoginActivity.this, "Instructor Logged in.", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), GamesettingActivity.class);
                     intent.putExtra("instructorName",userName.getText().toString());
+
+                    FirebaseUser registerUser = auth.getCurrentUser();
+                    assert registerUser != null;
+                    String userId = registerUser.getUid();
+                    updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
+                    playerDB.child(userId).child("numPlayer").setValue(0);
                     startActivity(intent);
                 }else {
                     Toast.makeText(LoginActivity.this, "Log in Failed", Toast.LENGTH_SHORT).show();
