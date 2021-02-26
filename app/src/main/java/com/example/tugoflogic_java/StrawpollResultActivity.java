@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -37,6 +38,7 @@ public class StrawpollResultActivity extends AppCompatActivity {
     ArrayList<BarEntry> entries = new ArrayList<>();
 
     BarChart barChart;
+    Integer totPlayerNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +51,25 @@ public class StrawpollResultActivity extends AppCompatActivity {
         btnStartGame = findViewById(R.id.btnStartGame);
 
         getData();
+        //load total number of player
+        playerDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                totPlayerNum = Integer.parseInt(String.valueOf(snapshot.getChildrenCount())) - 1; //except instructor
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         btnStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(StrawpollResultActivity.this, MainActivity.class));
+                Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+                mIntent.putExtra("totNum", totPlayerNum);
+                startActivity(mIntent);
+//                startActivity(new Intent(StrawpollResultActivity.this, MainActivity.class));
             }
         });
     }
@@ -98,6 +114,10 @@ public class StrawpollResultActivity extends AppCompatActivity {
         //setting the text size of the value of the bar
 //        barDataSet.setValueTextSize(15f);
         //remove the description label text located at the lower right corner
+
+        //setting yaxis
+        YAxis left = barChart.getAxisLeft();
+        left.setAxisMinimum(0f);
         Description description = new Description();
         description.setEnabled(false);
         barChart.setDescription(description);

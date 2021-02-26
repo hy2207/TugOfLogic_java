@@ -31,7 +31,6 @@ public class StrawpollActivity extends AppCompatActivity {
 
     private TextView tvMainClaim, tvPlayerName, tvRemainTime;
     private RadioGroup rg_strawPoll;
-    private RadioButton rb_convinced, rb_not;
     private Button btnSubmitStraw;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -47,6 +46,7 @@ public class StrawpollActivity extends AppCompatActivity {
     public Integer numStrawNot = 0;
     public String strawResult = "Convinced";
     public String playerKey;
+    CountDownTimer timer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +60,6 @@ public class StrawpollActivity extends AppCompatActivity {
         tvRemainTime = findViewById(R.id.txtViewRemainTime);
 
         rg_strawPoll = findViewById(R.id.voteStrawPoll);
-        rb_convinced = findViewById(R.id.strawConvinced);
-        rb_not = findViewById(R.id.strawNot);
 
         btnSubmitStraw = findViewById(R.id.btnSubmitStraw);
 
@@ -88,6 +86,7 @@ public class StrawpollActivity extends AppCompatActivity {
                 }
                 mainClaimDB.child("mc").child("numStrawCon").setValue(numStrawCon);
                 mainClaimDB.child("mc").child("numStrawNot").setValue(numStrawNot);
+                timer.cancel();
                 startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
             }
         });
@@ -132,7 +131,7 @@ public class StrawpollActivity extends AppCompatActivity {
                     //get time from setting page
                     String timeForm = getString(R.string.remain_time);
 
-                    new CountDownTimer(votingMin.votingTime * 60 * 1000, 1000) {
+                    timer = new CountDownTimer(votingMin.votingTime * 60 * 1000, 1000) {
 
                         public void onTick(long millisUntilFinished) {
 //                tvRemainTime.setText(String.format(timeForm, millisUntilFinished, ));

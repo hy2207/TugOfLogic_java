@@ -70,30 +70,35 @@
                 android:layout_weight="3"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvNumTrueRip"
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pieChartResult"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1"
-                    android:text="Established: " />
+                    android:layout_height="match_parent" />
 
-                <TextView
-                    android:id="@+id/tvNumFalseRip"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF"
-                    android:text="Contested: " />
+<!--                <TextView-->
+<!--                    android:id="@+id/tvNumTrueRip"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginLeft="2dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Established: " />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvNumFalseRip"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginLeft="2dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="#FFFFFF"-->
+<!--                    android:text="Contested: " />-->
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView2"
@@ -223,15 +228,33 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/mainPlayerName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/black"
-            android:text="Player Name"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/mainPlayerNum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@android:color/black"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/mainPlayerName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/black"
+                android:text="Player Name"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvPlayerStraw"
@@ -361,8 +384,6 @@
             </LinearLayout>
 
 
-
-
         </LinearLayout>
 
         <TextView
@@ -391,7 +412,6 @@
             android:clickable="false"
             android:text="submit RIP"
             android:textSize="12sp" />
-
 
 
     </LinearLayout>
