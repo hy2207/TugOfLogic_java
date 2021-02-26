@@ -9,10 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GamesettingActivity"></activity>
-        <activity android:name=".SignupActivity" >
-
-        </activity>
+        <activity android:name=".FinalpollResultActivity"></activity>
+        <activity android:name=".FinalpollActivity" />
+        <activity android:name=".GamesettingActivity" />
+        <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,13 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".StrawpollResultActivity" />
-        <activity android:name=".StrawpollActivity">
-
-        </activity>
-        <activity android:name=".MainActivity"
-            android:screenOrientation="landscape">
-
-        </activity>
+        <activity android:name=".StrawpollActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
