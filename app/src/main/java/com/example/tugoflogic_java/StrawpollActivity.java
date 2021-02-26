@@ -34,31 +34,36 @@ public class StrawpollActivity extends AppCompatActivity {
     private RadioButton rb_convinced, rb_not;
     private Button btnSubmitStraw;
 
-    private FirebaseAuth auth;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    DatabaseReference mainClaimDB = firebaseDatabase.getReference("MainClaim");
+    DatabaseReference mDatabase = firebaseDatabase.getReference();
+    DatabaseReference mainClaimDB = mDatabase.child("MainClaim");
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
+    DatabaseReference settingDB = mDatabase.child("GameSetting");
 
-    public Integer numConvinced = 0;
-    public Integer numNotYet = 0;
+    //get current user
+    FirebaseUser currentPlayer = FirebaseAuth.getInstance().getCurrentUser();
+
+    public Integer numStrawCon = 0;
+    public Integer numStrawNot = 0;
     public String strawResult = "Convinced";
+    public String playerKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_strawpoll);
 
+        playerKey = currentPlayer.getUid();
+
         tvMainClaim = findViewById(R.id.txtViewGetMc);
         tvPlayerName = findViewById(R.id.txtViewPlayerName);
+        tvRemainTime = findViewById(R.id.txtViewRemainTime);
 
         rg_strawPoll = findViewById(R.id.voteStrawPoll);
         rb_convinced = findViewById(R.id.strawConvinced);
         rb_not = findViewById(R.id.strawNot);
 
         btnSubmitStraw = findViewById(R.id.btnSubmitStraw);
-
-        //load data from firebase
-        getData();
 
         //voting
         rg_strawPoll.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -67,7 +72,7 @@ public class StrawpollActivity extends AppCompatActivity {
                 if (checkedId == R.id.strawConvinced){
                     strawResult = "Convinced";
                 } else {
-                    strawResult = "Established";
+                    strawResult = "NotYet";
                 }
             }
         });
@@ -75,39 +80,21 @@ public class StrawpollActivity extends AppCompatActivity {
         btnSubmitStraw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                playerDB.child("id").child("strawResult").setValue(strawResult);
+                playerDB.child(playerKey).child("strawResult").setValue(strawResult);
                 if (strawResult == "Convinced"){
-                    numConvinced++;
+                    numStrawCon++;
                 } else {
-                    numNotYet++;
+                    numStrawNot++;
                 }
-                mainClaimDB.child("id").child("numConvinced").setValue(numConvinced);
-                mainClaimDB.child("id").child("numNotYet").setValue(numNotYet);
-
-
+                mainClaimDB.child("mc").child("numStrawCon").setValue(numStrawCon);
+                mainClaimDB.child("mc").child("numStrawNot").setValue(numStrawNot);
                 startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
             }
         });
 
-        //get time from setting page
-        final String timeForm = getString(R.string.remain_time);
-        tvRemainTime = findViewById(R.id.txtViewRemainTime);
 
-        new CountDownTimer(5000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
-//                tvRemainTime.setText(String.format(timeForm, millisUntilFinished, ));
-                tvRemainTime.setText("seconds remaining: " + millisUntilFinished / 1000);
-            }
-
-            public void onFinish() {
-                tvRemainTime.setText("time is over!");
-//                startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
-            }
-        }.start();
-
+        getData();
     }
 
     //load Data from firebase
@@ -119,12 +106,48 @@ public class StrawpollActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DB_MainClaim mainClaim = null;
                 for (DataSnapshot child: snapshot.getChildren()){
-//                    Log.d("Hwayoung", "Main Claim : " + child.getValue());
                     mainClaim = child.getValue(DB_MainClaim.class);
                 }
-                tvMainClaim.setText(mainClaim.mc);
-                numConvinced = mainClaim.numStrawCon;
-                numNotYet = mainClaim.numStrawNot;
+                try {
+                    tvMainClaim.setText(mainClaim.mc);
+                    numStrawCon = mainClaim.numStrawCon;
+                    numStrawNot = mainClaim.numStrawNot;
+                } catch (Exception e){
+                    tvMainClaim.setText("**Wait**" + "\n" + "Instructor has not set the Main Claim");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        //load voting time
+        settingDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DB_GameSetting votingMin = null;
+                votingMin = snapshot.getValue(DB_GameSetting.class);
+                try {
+                    //get time from setting page
+                    String timeForm = getString(R.string.remain_time);
+
+                    new CountDownTimer(votingMin.votingTime * 60 * 1000, 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+//                tvRemainTime.setText(String.format(timeForm, millisUntilFinished, ));
+                            tvRemainTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+                        }
+
+                        public void onFinish() {
+                            tvRemainTime.setText("time is over!");
+                            startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
+                            playerDB.child(playerKey).child("strawResult").setValue(strawResult);
+                        }
+                    }.start();
+                } catch (Exception e){
+                    tvRemainTime.setText("**Wait**" + "\n" + "Instructor has not set the Time");
+                }
             }
 
             @Override
@@ -134,16 +157,14 @@ public class StrawpollActivity extends AppCompatActivity {
         });
 
         //load player information
-        playerDB.addValueEventListener(new ValueEventListener() {
+        playerDB.child(playerKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DB_Player playerInfo = null;
-                for (DataSnapshot child : snapshot.getChildren()){
-                    playerInfo = child.getValue(DB_Player.class);
-                }
-
-                tvPlayerName.setText("Welcome Player : " + "\n" + playerInfo.name);
-
+//                for (DataSnapshot child : snapshot.getChildren()){
+                    playerInfo = snapshot.getValue(DB_Player.class);
+//                }
+                tvPlayerName.setText("Welcome, " + playerInfo.name + "\n" + "Player Number: " + playerInfo.numPlayer);
             }
 
             @Override
@@ -153,14 +174,4 @@ public class StrawpollActivity extends AppCompatActivity {
         });
     }
 
-    private void updatePlayer(String userId, String name, String email){
-        String key = playerDB.child(userId).getKey();
-        DB_Player player = new DB_Player(name,email);
-        Map<String, Object> playerValue = player.toMap();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(key, playerValue);
-
-        playerDB.updateChildren(childUpdates);
-
-    }
 }

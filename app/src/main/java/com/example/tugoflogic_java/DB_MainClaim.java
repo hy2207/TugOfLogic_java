@@ -5,10 +5,10 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class DB_MainClaim {
     public String mc;
-    public int numStrawCon;
-    public int numStrawNot;
-    public int numFinalCon;
-    public int numFinalNot;
+    public int numStrawCon = 0;
+    public int numStrawNot = 0;
+    public int numFinalCon = 0;
+    public int numFinalNot = 0;
 
     public DB_MainClaim(){
 

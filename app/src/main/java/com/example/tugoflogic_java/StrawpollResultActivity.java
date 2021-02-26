@@ -34,7 +34,6 @@ public class StrawpollResultActivity extends AppCompatActivity {
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
 
     //for bar chart
-    ArrayList<Integer> valueList = new ArrayList<Integer>();
     ArrayList<BarEntry> entries = new ArrayList<>();
 
     BarChart barChart;
@@ -48,10 +47,6 @@ public class StrawpollResultActivity extends AppCompatActivity {
 
         barChart = findViewById(R.id.barChartResult);
         btnStartGame = findViewById(R.id.btnStartGame);
-
-//        Intent intent = getIntent();
-//        String name = intent.getStringExtra("mc");
-//        tvMainClaim.setText(name);
 
         getData();
 
@@ -83,7 +78,6 @@ public class StrawpollResultActivity extends AppCompatActivity {
                 BarData data = new BarData(barDataSet);
                 data.setBarWidth(0.3f);
                 barChart.setData(data);
-
                 barChart.invalidate();
             }
 

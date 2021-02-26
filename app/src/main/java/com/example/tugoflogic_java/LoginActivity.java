@@ -39,12 +39,14 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     RadioGroup selectUser;
     boolean isStudent = true;
-    TextView playerText;
+//    TextView playerText;
     String strawResult = "", finalResult = "", votingRip = "", ground = "", comment = "";
     long numPlayer = 0;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    DatabaseReference playerDB = firebaseDatabase.getReference("Player");
+    DatabaseReference mDatabase = firebaseDatabase.getReference();
+    DatabaseReference playerDB = mDatabase.child("Player");
+//    DatabaseReference playerDB = firebaseDatabase.getReference("Player");
 
 
     @Override
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         userName = findViewById(R.id.editTxtName);
         playerNum = 0;
         selectUser = findViewById(R.id.selectUser);
-        playerText = findViewById(R.id.txtViewNumber);
+//        playerText = findViewById(R.id.txtViewNumber);
         loginBtn = findViewById(R.id.btnSignIn);
         signupBtn = findViewById(R.id.btnSignUp);
 
@@ -92,21 +94,24 @@ public class LoginActivity extends AppCompatActivity {
 //        });
         FirebaseUser currentUser = auth.getCurrentUser();
         assert currentUser != null;
-        final String uuid = currentUser.getUid();
+        if(currentUser != null){
+            String uuid = currentUser.getUid();
 
-        playerDB.child(uuid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    numPlayer=(snapshot.getChildrenCount());
+            playerDB.child(uuid).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        numPlayer=(snapshot.getChildrenCount());
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+
 
 
 //                final String femail = currentUser.getEmail();

@@ -1,5 +1,6 @@
 package com.example.tugoflogic_java;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,6 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,10 +25,15 @@ import java.util.Date;
 public class GamesettingActivity extends AppCompatActivity {
 
 
-    TextView instructorName, countdownTxt;
+    TextView instructorName, priorMC;
     EditText editTxtTime, mainClaim;
     Button btnGoToGameMain;
     Integer votingTime;
+
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference mDatabase = firebaseDatabase.getReference();
+    DatabaseReference mainClaimDB = mDatabase.child("MainClaim");
+    DatabaseReference gameSettingDB = mDatabase.child("GameSetting");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,42 +43,67 @@ public class GamesettingActivity extends AppCompatActivity {
         instructorName = findViewById(R.id.instructorName);
         editTxtTime = findViewById(R.id.editTxtTime);
         btnGoToGameMain = findViewById(R.id.btnGoToGameMain);
-        countdownTxt = findViewById(R.id.countDownTxt);
         mainClaim = findViewById(R.id.editTxtMC);
+        priorMC = findViewById(R.id.tvPriorMC);
 
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("instructorName");
-        instructorName.setText("Welcome Instructor : " +"\n"+ name);
+        //get instructor name from login page
+        final Intent intent = getIntent();
+        final String name = intent.getStringExtra("instructorName");
+        instructorName.setText("Welcome Instructor, " + name);
+
+        //list of prior mc
+        mainClaimDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DB_MainClaim db_mainClaim = null;
+                String listMC = "";
+                for (DataSnapshot child : snapshot.getChildren()){
+                    db_mainClaim = child.getValue(DB_MainClaim.class);
+                    listMC += db_mainClaim.mc + "\n";
+                }
+                priorMC.setText(listMC);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         btnGoToGameMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text = editTxtTime.getText().toString();
-                DateFormat format = new SimpleDateFormat("mm:ss");
-                try {
-                    Date date = format.parse(text);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                if(!text.equalsIgnoreCase("")) {
-                    final int sec = Integer.valueOf(text);
-                    CountDownTimer countDownTimer = new CountDownTimer(sec * 1000, 1000) {
-                        @Override
-                        public void onTick(long millils) {
-                            countdownTxt.setText("Minutes : " +  new SimpleDateFormat("mm:ss").format(new Date(millils)));
-                        }
-                        @Override
-                        public void onFinish() {
-                            countdownTxt.setText("Finished");
-                            startActivity(new Intent(getApplicationContext(), StrawpollResultActivity.class));
-                        }
-                    }.start();
-                }
+                votingTime = Integer.parseInt(editTxtTime.getText().toString());
+//                DateFormat format = new SimpleDateFormat("mm:ss");
+//                try {
+//                    Date date = format.parse(text);
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//                if(!text.equalsIgnoreCase("")) {
+//                    final int sec = Integer.valueOf(text);
+//                    CountDownTimer countDownTimer = new CountDownTimer(sec * 1000, 1000) {
+//                        @Override
+//                        public void onTick(long millils) {
+//                            countdownTxt.setText("Minutes : " +  new SimpleDateFormat("mm:ss").format(new Date(millils)));
+//                        }
+//                        @Override
+//                        public void onFinish() {
+//                            countdownTxt.setText("Finished");
+//                            startActivity(new Intent(getApplicationContext(), StrawpollResultActivity.class));
+//                        }
+//                    }.start();
+//                }
 
+                //db update
+                DB_MainClaim settingMC = new DB_MainClaim(mainClaim.getText().toString(), 0, 0,0,0);
+                mainClaimDB.child("mc").setValue(settingMC);
+                //voting time update to db
+                gameSettingDB.child("votingTime").setValue(votingTime);
 
                 Intent intentS = new Intent(getApplicationContext(), StrawpollResultActivity.class);
-                intentS.putExtra("mc", mainClaim.getText().toString());
+                intentS.putExtra("instructorName", name);
                 startActivity(intentS);
             }
         });
