@@ -46,8 +46,6 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference mDatabase = firebaseDatabase.getReference();
     DatabaseReference playerDB = mDatabase.child("Player");
-//    DatabaseReference playerDB = firebaseDatabase.getReference("Player");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,39 +64,79 @@ public class LoginActivity extends AppCompatActivity {
 
         selectUser.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+            public void onCheckedChanged(RadioGroup radioGroup, final int checkedId) {
                 switch (checkedId){
                     case R.id.btnInstructor :
                         isStudent = false;
                        // playerNum = 0;
+                        FirebaseUser currentUser = auth.getCurrentUser();
+                        assert currentUser != null;
+                        if(currentUser != null){
+                            final String uuid = currentUser.getUid();
+                            playerDB.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        numPlayer=(snapshot.getChildrenCount()-1);
+                                        Log.i("Sangmin", "Current uuid : " + uuid);
+                                        Log.i("Sangmin", "Current num player: " + numPlayer);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
                         break;
                     case R.id.btnStudent:
                         isStudent = true;
                         //playerNum++;
+                        currentUser = auth.getCurrentUser();
+                        assert currentUser != null;
+                        if(currentUser != null){
+                            final String uuid = currentUser.getUid();
+                            playerDB.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        numPlayer=(snapshot.getChildrenCount());
+                                        Log.i("Sangmin", "Current uuid : " + uuid);
+                                        Log.i("Sangmin", "Current num player: " + numPlayer);
+                                    }if(snapshot.exists() && checkedId == R.id.btnInstructor){
+                                        numPlayer=(snapshot.getChildrenCount()-1);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                        break;
                 }
             }
         });
 
-        FirebaseUser currentUser = auth.getCurrentUser();
-        assert currentUser != null;
-        if(currentUser != null){
-            final String uuid = currentUser.getUid();
-
-            playerDB.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        numPlayer=(snapshot.getChildrenCount());
-                        Log.i("Sangmin", "Current uuid : " + uuid);
-                        Log.i("Sangmin", "Current num player: " + numPlayer);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
+//        FirebaseUser currentUser = auth.getCurrentUser();
+//        assert currentUser != null;
+//        if(currentUser != null){
+//            final String uuid = currentUser.getUid();
+//            playerDB.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if(snapshot.exists()){
+//                        numPlayer=(snapshot.getChildrenCount());
+//                        Log.i("Sangmin", "Current uuid : " + uuid);
+//                        Log.i("Sangmin", "Current num player: " + numPlayer);
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//        }
 
         // sign in
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
                     assert registerUser != null;
                     String userId = registerUser.getUid();
                     updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
-                    playerDB.child(String.valueOf(numPlayer+1));
+                    playerDB.child(String.valueOf(numPlayer));
                     startActivity(intent);
                 }else if (task.isSuccessful() && !isStudent){
                     Toast.makeText(LoginActivity.this, "Instructor Logged in.", Toast.LENGTH_SHORT).show();
