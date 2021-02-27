@@ -70,27 +70,55 @@
                 android:layout_weight="3"
                 android:orientation="vertical">
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartResult"
+<!--                <com.github.mikephil.charting.charts.BarChart-->
+<!--                    android:id="@+id/mainBarChart"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:rotation="90"/>-->
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvNumTrueRip"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginLeft="2dp"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:text="Established: " />-->
+                    <TextView
+                        android:id="@+id/tvNumEstRipTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="1"
+                        android:text="Established: " />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvNumFalseRip"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginLeft="2dp"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:background="#FFFFFF"-->
-<!--                    android:text="Contested: " />-->
+                    <TextView
+                        android:id="@+id/tvNumEstablished"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvNumConRipTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="2dp"
+                        android:text="Contested: " />
+
+                    <TextView
+                        android:id="@+id/tvNumConRip"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
             </LinearLayout>
         </LinearLayout>
 
@@ -181,7 +209,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txtViewPerSufficient"
+                android:id="@+id/tvPerSufficient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
@@ -305,7 +333,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@android:color/holo_blue_dark"
-                        android:checked="true"
+                        android:checked="false"
                         android:scrollbarSize="4dp"
                         android:text="ESTABLISHED"
                         android:textSize="10sp" />
@@ -368,7 +396,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:checked="true"
+                        android:checked="false"
                         android:text="No"
                         android:textSize="10sp" />
                 </RadioGroup>
