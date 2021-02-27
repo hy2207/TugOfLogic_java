@@ -134,7 +134,6 @@ public class StrawpollActivity extends AppCompatActivity {
                     timer = new CountDownTimer(votingMin.votingTime * 60 * 1000, 1000) {
 
                         public void onTick(long millisUntilFinished) {
-//                tvRemainTime.setText(String.format(timeForm, millisUntilFinished, ));
                             tvRemainTime.setText("seconds remaining: " + millisUntilFinished / 1000);
                         }
 

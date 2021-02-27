@@ -101,6 +101,8 @@ public class GamesettingActivity extends AppCompatActivity {
                 mainClaimDB.child("mc").setValue(settingMC);
                 //voting time update to db
                 gameSettingDB.child("votingTime").setValue(votingTime);
+                gameSettingDB.child("endGame").setValue(false);
+                gameSettingDB.child("goNextBout").setValue(false);
 
                 Intent intentS = new Intent(getApplicationContext(), StrawpollResultActivity.class);
                 intentS.putExtra("instructorName", name);
