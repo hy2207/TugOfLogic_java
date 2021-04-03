@@ -39,9 +39,10 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     RadioGroup selectUser;
     boolean isStudent = true;
+    boolean isReferee = true;
 //    TextView playerText;
-    String strawResult = "", finalResult = "", votingRip = "", ground = "", comment = "";
-    long numPlayer = 0;
+    String strawResult = "", finalResult = "", votingRip = "", ground = "", comment = "", playerRip = "";
+//    long numPlayer = 0;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference mDatabase = firebaseDatabase.getReference();
@@ -56,7 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         userEmail = findViewById(R.id.editTxtID);
         userPw = findViewById(R.id.editTxtPW);
         userName = findViewById(R.id.editTxtName);
-        playerNum = 0;
+//        playerNum = 0;
+
         selectUser = findViewById(R.id.selectUser);
 //        playerText = findViewById(R.id.txtViewNumber);
         loginBtn = findViewById(R.id.btnSignIn);
@@ -68,10 +70,12 @@ public class LoginActivity extends AppCompatActivity {
                 switch (checkedId){
                     case R.id.btnInstructor :
                         isStudent = false;
+                        isReferee = true;
                        // playerNum = 0;
                         break;
                     case R.id.btnStudent:
                         isStudent = true;
+                        isReferee = false;
                         //playerNum++;
                 }
             }
@@ -85,9 +89,9 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
-                        numPlayer=(snapshot.getChildrenCount());
-                        Log.i("Sangmin", "Current uuid : " + uuid);
-                        Log.i("Sangmin", "Current num player: " + numPlayer);
+//                        numPlayer=(snapshot.getChildrenCount());
+//                        Log.i("Sangmin", "Current uuid : " + uuid);
+//                        Log.i("Sangmin", "Current num player: " + numPlayer);
                     }
                 }
                 @Override
@@ -150,19 +154,19 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseUser registerUser = auth.getCurrentUser();
                     assert registerUser != null;
                     String userId = registerUser.getUid();
-                    updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
-                    playerDB.child(String.valueOf(numPlayer));
+                    updatePlayer(userId,email,name, strawResult,finalResult,isReferee,votingRip,ground,comment,playerRip);
+//                    playerDB.child(String.valueOf(numPlayer));
                     startActivity(intent);
                 }else if (task.isSuccessful() && !isStudent){
-                    Toast.makeText(LoginActivity.this, "Instructor Logged in.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Referee Logged in.", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), GamesettingActivity.class);
                     intent.putExtra("instructorName",userName.getText().toString());
 
                     FirebaseUser registerUser = auth.getCurrentUser();
                     assert registerUser != null;
                     String userId = registerUser.getUid();
-                    updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
-                    playerDB.child(userId).child("numPlayer").setValue(0);
+                    updatePlayer(userId,email,name, strawResult,finalResult,isReferee,votingRip,ground,comment,playerRip);
+//                    playerDB.child(userId).child("numPlayer").setValue(0);
                     startActivity(intent);
                 }else {
                     Toast.makeText(LoginActivity.this, "Log in Failed", Toast.LENGTH_SHORT).show();
@@ -171,9 +175,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void updatePlayer(String userId, String email, String name, String strawResult, String finalResult, long numPlayer, String votingRip, String ground, String comment){
+    private void updatePlayer(String userId, String email, String name, String strawResult, String finalResult, boolean isReferee, String votingRip, String ground, String comment, String playerRip){
         String key = playerDB.child(userId).getKey();
-        DB_Player player = new DB_Player(email, name, strawResult, finalResult, numPlayer, votingRip, ground, comment);
+        DB_Player player = new DB_Player(email, name, strawResult, finalResult, isReferee, votingRip, ground, comment, playerRip);
         Map<String, Object> playerValue = player.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(key, playerValue);

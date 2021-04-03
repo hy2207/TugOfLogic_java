@@ -7,15 +7,26 @@ public class DB_GameSetting {
     public int votingTime = 0;
     public boolean endGame = false;
     public boolean goNextBout = false;
+    public boolean showList = false;
+    public boolean showComment = false;
 
     public DB_GameSetting(){
 
     }
 
-    public DB_GameSetting(int votingTime, boolean endGame) {
+    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList, boolean showComment) {
         this.votingTime = votingTime;
         this.endGame = endGame;
+        this.goNextBout = goNextBout;
+        this.showList = showList;
+        this.showComment = showComment;
+    }
 
+    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList) {
+        this.votingTime = votingTime;
+        this.endGame = endGame;
+        this.goNextBout = goNextBout;
+        this.showList = showList;
     }
 
     public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout) {

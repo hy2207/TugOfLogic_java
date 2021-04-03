@@ -13,33 +13,54 @@ public class DB_Player {
     public String name;
     public String strawResult;
     public String finalResult;
-    public long numPlayer;
+//    public long numPlayer;
+    public boolean isReferee;
     public String votingRip;
     public String ground;
     public String comment;
+    public String playerRip;
 
     public DB_Player(){
 
     }
 
-    public DB_Player(String newEmail){
-        this.email = newEmail;
-    }
-
-    public DB_Player(String name, String email){
-        this.name = name;
-        this.email = email;
-    }
-
-    public DB_Player(String email, String name, String strawResult, String finalResult, long numPlayer, String votingRip, String ground, String comment) {
+    public DB_Player(String email, String name, String strawResult, String finalResult, boolean isReferee, String votingRip, String ground, String comment, String playerRip) {
         this.email = email;
         this.name = name;
         this.strawResult = strawResult;
         this.finalResult = finalResult;
-        this.numPlayer = numPlayer;
+        this.isReferee = isReferee;
         this.votingRip = votingRip;
         this.ground = ground;
         this.comment = comment;
+        this.playerRip = playerRip;
+    }
+
+    public DB_Player(String email, String name, String strawResult, String finalResult, boolean isReferee, String votingRip, String ground, String comment) {
+        this.email = email;
+        this.name = name;
+        this.strawResult = strawResult;
+        this.finalResult = finalResult;
+        this.isReferee = isReferee;
+        this.votingRip = votingRip;
+        this.ground = ground;
+        this.comment = comment;
+    }
+
+    public String getPlayerRip() {
+        return playerRip;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPlayerRip(String playerRip) {
+        this.playerRip = playerRip;
     }
 
     @Exclude
@@ -49,11 +70,11 @@ public class DB_Player {
         result.put("strawResult",strawResult);
         result.put("finalResult",finalResult);
         result.put("email",email);
-        result.put("numPlayer",numPlayer);
+        result.put("isReferee",isReferee);
         result.put("votingRip",votingRip);
         result.put("ground",ground);
         result.put("comment",comment);
-
+        result.put("playerRip", playerRip);
         return result;
     };
 }

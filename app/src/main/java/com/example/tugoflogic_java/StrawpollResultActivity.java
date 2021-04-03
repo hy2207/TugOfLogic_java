@@ -31,14 +31,17 @@ public class StrawpollResultActivity extends AppCompatActivity {
     private Button btnStartGame;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference mDatabase = firebaseDatabase.getReference();
     DatabaseReference mainClaimDB = firebaseDatabase.getReference("MainClaim");
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
+    DatabaseReference boutDB = mDatabase.child("Bout");
 
     //for bar chart
     ArrayList<BarEntry> entries = new ArrayList<>();
 
     BarChart barChart;
     Integer totPlayerNum;
+    Boolean isReferee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +54,19 @@ public class StrawpollResultActivity extends AppCompatActivity {
         btnStartGame = findViewById(R.id.btnStartGame);
 
         getData();
+
+        final Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+
         //load total number of player
         playerDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DB_Player player= null;
                 totPlayerNum = Integer.parseInt(String.valueOf(snapshot.getChildrenCount())) - 1; //except instructor
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    player = child.getValue(DB_Player.class);
+                }
+                isReferee = player.isReferee;
             }
 
             @Override
@@ -66,10 +77,15 @@ public class StrawpollResultActivity extends AppCompatActivity {
         btnStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+                //setting bout when starting game
+                if(isReferee){
+                    Integer boutNum = 1;
+                    DB_Bout settingBout = new DB_Bout(boutNum, "", "", 0, 0, 0);
+                    boutDB.child(String.valueOf(boutNum)).setValue(settingBout);
+                }
+                mIntent.putExtra("isReferee", isReferee);
                 mIntent.putExtra("totNum", totPlayerNum);
                 startActivity(mIntent);
-//                startActivity(new Intent(StrawpollResultActivity.this, MainActivity.class));
             }
         });
     }
