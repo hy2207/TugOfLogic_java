@@ -52,8 +52,9 @@ public class MainActivity extends AppCompatActivity {
     ToggleButton btnToggleCom, btnShowList;
     EditText editTxtRip;
     LinearLayout linearLayoutPlayer;
+    Boolean isReferee;
 
-    public String txtRipTitle, playerKey, votingRip, votingGround, listGround ="", listDrop="";
+    public String txtRipTitle, playerKey, votingRip, votingGround, listGround ="", listDrop="", boutPlayer, playerName;
     public Integer currentBoutNum = 1, totPlayerNum = 1, numContested = 0, numEstablished = 0, numGround = 0;
     public RadioGroup rg_voteRipe, rg_voteGround;
 
@@ -78,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
         //delete voting time here to prevent to back to result page
         settingDB.child("votingTime").removeValue();
-
-
+        //delete startgame here too prevent keeping reloading
+        settingDB.child("startGame").removeValue();
 
         tvMainClaim = findViewById(R.id.mainMC);
         tvPlayer = findViewById(R.id.mainPlayerName);
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent mIntent = new Intent(getApplicationContext(), RiplistActivity.class);
                 mIntent.putExtra("boutNum", currentBoutNum);
-                startActivity(new Intent(getApplicationContext(), RiplistActivity.class));
+                startActivity(mIntent);
             }
         });
 
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //submit comment
         btnSubCom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -266,11 +268,11 @@ public class MainActivity extends AppCompatActivity {
                 if (settingInfo.endGame){
                     startActivity(new Intent(MainActivity.this, FinalpollActivity.class));
                 }
-                if (settingInfo.goNextBout){
+                if (settingInfo.goNextBout && !isReferee){
                     btnSubRip.setVisibility(View.VISIBLE);
                     btnSubCom.setVisibility(View.VISIBLE);
-                    playerDB.child(playerKey).child("playerRip").setValue("");
-                    playerDB.child(playerKey).child("votingRip").setValue("");
+//                    playerDB.child(playerKey).child("playerRip").setValue("");
+//                    playerDB.child(playerKey).child("votingRip").setValue("");
                     //move rip to ground list
 //                    if (Integer.parseInt(tvNumEstablished.getText().toString()) >= Integer.parseInt(tvNumContested.getText().toString())){
 //                        listGround += tvRip.getText().toString() + "\n";
@@ -301,20 +303,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //load player
+        //load player info
         playerDB.child(playerKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 DB_Player playerInfo = null;
                 playerInfo = snapshot.getValue(DB_Player.class);
+                playerName = playerInfo.name;
+                isReferee = playerInfo.isReferee;
                 //Referee
-                if (playerInfo.isReferee){
+                if (isReferee){
                     tvPlayer.setText("Referee, " + playerInfo.name);
                     btnSubCom.setVisibility(View.INVISIBLE);
                     btnSubRip.setVisibility(View.INVISIBLE);
                 } else { //student
                     tvPlayer.setText(playerInfo.name);
+
+                    //invisible toggle button
                     btnToggleCom.setVisibility(View.INVISIBLE);
                     btnShowList.setVisibility(View.INVISIBLE);
                     btnStartBout.setVisibility(View.INVISIBLE);
@@ -322,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
                     btnChooseRip.setVisibility(View.INVISIBLE);
                     btnReRip.setVisibility(View.INVISIBLE);
 
+                    //display straw poll result
                     if (playerInfo.strawResult == "Convinced") {
                         tvPlayerStraw.setText("Straw poll: Convinced");
                     } else {
@@ -336,25 +343,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //load bout
-        boutDB.child(String.valueOf(currentBoutNum)).addValueEventListener(new ValueEventListener() {
+        boutDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 DB_Bout boutInfo = null;
-                boutInfo = snapshot.getValue(DB_Bout.class);
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    boutInfo = child.getValue(DB_Bout.class);
+                }
 
                 tvRipTitle.setText(String.format(txtRipTitle, boutInfo.boutNumber));
                 tvRip.setText(boutInfo.rip);
                 currentBoutNum = boutInfo.boutNumber;
+                boutPlayer = boutInfo.player;
+                if (playerName == boutPlayer){
+                    btnSubCom.setVisibility(View.INVISIBLE);
 
-                Float perGround = Float.valueOf((boutInfo.numGround / totPlayerNum) * 100);
-                tvPerGround.setText(perGround.toString());
-                if (boutInfo.player.length() != 0){
-                    playBout(boutInfo.player);
                 }
-
-                tvNumEstablished.setText(boutInfo.numEstablished.toString());
-                tvNumContested.setText(boutInfo.numContested.toString());
+//
+//                Float perGround = Float.valueOf((boutInfo.numGround / totPlayerNum) * 100);
+//                tvPerGround.setText(perGround.toString());
+//                if (boutInfo.player.length() != 0){
+//                    playBout(boutInfo.player);
+//                }
+//
+//                tvNumEstablished.setText(boutInfo.numEstablished.toString());
+//                tvNumContested.setText(boutInfo.numContested.toString());
             }
 
             @Override

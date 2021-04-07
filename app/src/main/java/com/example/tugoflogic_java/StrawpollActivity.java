@@ -211,6 +211,7 @@ public class StrawpollActivity extends AppCompatActivity {
 //                }
 //                tvPlayerName.setText("Welcome, " + playerInfo.name + "\n" + "Player Number: " + playerInfo.numPlayer);
                 tvPlayerName.setText("Welcome, " + playerInfo.name + "\n");
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

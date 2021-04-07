@@ -9,6 +9,16 @@ public class DB_GameSetting {
     public boolean goNextBout = false;
     public boolean showList = false;
     public boolean showComment = false;
+    public boolean startGame = false;
+
+    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList, boolean showComment, boolean startGame) {
+        this.votingTime = votingTime;
+        this.endGame = endGame;
+        this.goNextBout = goNextBout;
+        this.showList = showList;
+        this.showComment = showComment;
+        this.startGame = startGame;
+    }
 
     public DB_GameSetting(){
 

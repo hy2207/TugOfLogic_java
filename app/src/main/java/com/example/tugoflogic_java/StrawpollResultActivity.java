@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,8 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +37,7 @@ public class StrawpollResultActivity extends AppCompatActivity {
     DatabaseReference mDatabase = firebaseDatabase.getReference();
     DatabaseReference mainClaimDB = firebaseDatabase.getReference("MainClaim");
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
+    DatabaseReference settingDB = firebaseDatabase.getReference("GameSetting");
     DatabaseReference boutDB = mDatabase.child("Bout");
 
     //for bar chart
@@ -42,6 +46,7 @@ public class StrawpollResultActivity extends AppCompatActivity {
     BarChart barChart;
     Integer totPlayerNum;
     Boolean isReferee;
+    String playerKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +58,31 @@ public class StrawpollResultActivity extends AppCompatActivity {
         barChart = findViewById(R.id.barChartResult);
         btnStartGame = findViewById(R.id.btnStartGame);
 
+        FirebaseUser currentPlayer = FirebaseAuth.getInstance().getCurrentUser();
+        playerKey = currentPlayer.getUid();
+
         getData();
 
-        final Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
 
         //load total number of player
         playerDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DB_Player player= null;
                 totPlayerNum = Integer.parseInt(String.valueOf(snapshot.getChildrenCount())) - 1; //except instructor
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    player = child.getValue(DB_Player.class);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
+        playerDB.child(playerKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DB_Player playerInfo = null;
+                playerInfo = snapshot.getValue(DB_Player.class);
+                isReferee = playerInfo.isReferee;
+                if (!isReferee){
+                    btnStartGame.setVisibility(View.INVISIBLE);
                 }
-                isReferee = player.isReferee;
             }
 
             @Override
@@ -74,18 +90,18 @@ public class StrawpollResultActivity extends AppCompatActivity {
 
             }
         });
+
         btnStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                settingDB.child("startGame").setValue(true);
                 //setting bout when starting game
                 if(isReferee){
                     Integer boutNum = 1;
                     DB_Bout settingBout = new DB_Bout(boutNum, "", "", 0, 0, 0);
                     boutDB.child(String.valueOf(boutNum)).setValue(settingBout);
                 }
-                mIntent.putExtra("isReferee", isReferee);
-                mIntent.putExtra("totNum", totPlayerNum);
-                startActivity(mIntent);
+
             }
         });
     }
@@ -111,6 +127,24 @@ public class StrawpollResultActivity extends AppCompatActivity {
                 data.setBarWidth(0.3f);
                 barChart.setData(data);
                 barChart.invalidate();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        settingDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DB_GameSetting setting = null;
+                setting = snapshot.getValue(DB_GameSetting.class);
+                if (setting.startGame){
+                    Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    mIntent.putExtra("totNum", totPlayerNum);
+                    startActivity(mIntent);
+                }
             }
 
             @Override

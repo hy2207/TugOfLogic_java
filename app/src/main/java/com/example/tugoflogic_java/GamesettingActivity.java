@@ -84,6 +84,7 @@ public class GamesettingActivity extends AppCompatActivity {
                 gameSettingDB.child("goNextBout").setValue(false);
                 gameSettingDB.child("showList").setValue(false);
                 gameSettingDB.child("showComment").setValue(false);
+                gameSettingDB.child("startGame").setValue(false);
 
                 Intent intentS = new Intent(getApplicationContext(), StrawpollActivity.class);
                 intentS.putExtra("refereeName", name);

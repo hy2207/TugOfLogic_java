@@ -59,7 +59,6 @@ public class RipAdapter extends RecyclerView.Adapter<RipAdapter.RipViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RipViewHolder holder, int position) {
-        Log.e("Hwayoung", arrayList.get(position).name);
         holder.tvName.setText(arrayList.get(position).name);
         holder.tvRip.setText(arrayList.get(position).playerRip);
     }
