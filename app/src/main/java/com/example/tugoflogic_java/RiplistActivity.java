@@ -25,6 +25,7 @@ public class RiplistActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
     DatabaseReference boutDB = firebaseDatabase.getReference("Bout");
+    DatabaseReference settingDB = firebaseDatabase.getReference("GameSetting");
     FirebaseUser currentPlayer = FirebaseAuth.getInstance().getCurrentUser();
 
     //recyclerview
@@ -82,6 +83,8 @@ public class RiplistActivity extends AppCompatActivity {
 
                 boutDB.child(boutNum.toString()).child("player").setValue(selectRip.name);
                 boutDB.child(boutNum.toString()).child("rip").setValue(selectRip.playerRip);
+
+                settingDB.child("goNextBout").setValue(false);
 
                 finish();
             }

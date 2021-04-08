@@ -39,6 +39,7 @@ public class StrawpollResultActivity extends AppCompatActivity {
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
     DatabaseReference settingDB = firebaseDatabase.getReference("GameSetting");
     DatabaseReference boutDB = mDatabase.child("Bout");
+    DatabaseReference ripDB = mDatabase.child("Rip");
 
     //for bar chart
     ArrayList<BarEntry> entries = new ArrayList<>();
@@ -95,11 +96,13 @@ public class StrawpollResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 settingDB.child("startGame").setValue(true);
-                //setting bout when starting game
+                //setting first bout and rip when starting game
                 if(isReferee){
                     Integer boutNum = 1;
-                    DB_Bout settingBout = new DB_Bout(boutNum, "", "", 0, 0, 0);
+                    DB_Bout settingBout = new DB_Bout(boutNum, 0, 0, "", "", 0, "");
                     boutDB.child(String.valueOf(boutNum)).setValue(settingBout);
+                    DB_Rip ripBout = new DB_Rip(boutNum, "", "", false);
+                    ripDB.child(String.valueOf(boutNum)).setValue(ripBout);
                 }
 
             }

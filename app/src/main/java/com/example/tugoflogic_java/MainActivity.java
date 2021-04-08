@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference settingDB = firebaseDatabase.getReference("GameSetting");
 //    DatabaseReference boutDB = mDatabase.child("Bout");
     DatabaseReference boutDB = firebaseDatabase.getReference("Bout");
+    DatabaseReference ripDB = firebaseDatabase.getReference("Rip");
     FirebaseUser currentPlayer = FirebaseAuth.getInstance().getCurrentUser();
 
     TextView tvMainClaim, tvPlayer, tvPlayerStraw, tvRipTitle,
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         //delete voting time here to prevent to back to result page
         settingDB.child("votingTime").removeValue();
-        //delete startgame here too prevent keeping reloading
+        //delete start game here too prevent keeping reloading
         settingDB.child("startGame").removeValue();
 
         tvMainClaim = findViewById(R.id.mainMC);
@@ -98,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
         tvNumContested = findViewById(R.id.tvNumConRip);
         rg_voteGround = findViewById(R.id.voteGround);
         tvPerGround = findViewById(R.id.tvPerSufficient);
-        tvListGround = findViewById(R.id.txtViewGround);
-        tvListDrop = findViewById(R.id.txtViewDrop);
+
 
         btnStartBout = findViewById(R.id.btnStartBout);
         btnEndGame = findViewById(R.id.btnEndGame);
@@ -113,7 +113,16 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutPlayer = findViewById(R.id.layoutPlayer);
 
         dialAllList = new Dialog(MainActivity.this);
+        View dialView = getLayoutInflater().inflate(R.layout.dialog_all_list, null);
+        tvListGround = dialView.findViewById(R.id.txtViewGround);
+        tvListDrop = dialView.findViewById(R.id.txtViewDrop);
 
+        dialAllList.setContentView(R.layout.dialog_all_list);
+
+//        tvListGround = dialAllList.findViewById(R.id.txtViewGround);
+//        tvListDrop = dialAllList.findViewById(R.id.txtViewDrop);
+//                findViewById(R.id.txtViewGround);
+//        tvListDrop = findViewById(R.id.txtViewDrop);
 
         getData();
 
@@ -219,11 +228,29 @@ public class MainActivity extends AppCompatActivity {
         btnStartBout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ripDB.child(String.valueOf(currentBoutNum)).child("boutNumber").setValue(currentBoutNum);
+                ripDB.child(String.valueOf(currentBoutNum)).child("playerName").setValue(boutPlayer);
+                ripDB.child(String.valueOf(currentBoutNum)).child("rip").setValue(tvRip.getText().toString());
+                if (Float.valueOf(tvNumContested.getText().toString()) <= Float.valueOf(tvNumEstablished.getText().toString())) {
+//                    listGround += tvRip.getText().toString() + "\n";
+//                    tvListGround.setText(tvRip.getText().toString());
+                    ripDB.child(String.valueOf(currentBoutNum)).child("isGround").setValue(true);
+                } else {
+//                    listDrop += tvRip.getText().toString() + "\n";
+//                    tvListDrop.setText(tvRip.getText().toString());
+                    ripDB.child(String.valueOf(currentBoutNum)).child("isGround").setValue(false);
+
+                }
+
                 currentBoutNum++;
 
-                DB_Bout settingBout = new DB_Bout(currentBoutNum, "", "", 0, 0, 0);
+                DB_Bout settingBout = new DB_Bout(currentBoutNum, 0, 0, "", "", 0, "");
                 boutDB.child(String.valueOf(currentBoutNum)).setValue(settingBout);
                 settingDB.child("goNextBout").setValue(true);
+
+                DB_Rip ripBout = new DB_Rip(currentBoutNum, "", "", false);
+                ripDB.child(String.valueOf(currentBoutNum)).setValue(ripBout);
+
 
             }
         });
@@ -232,8 +259,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 settingDB.child("endGame").setValue(true);
-
-//                startActivity(new Intent(getApplicationContext(), FinalpollActivity.class));
             }
         });
     }
@@ -268,13 +293,8 @@ public class MainActivity extends AppCompatActivity {
                 if (settingInfo.endGame){
                     startActivity(new Intent(MainActivity.this, FinalpollActivity.class));
                 }
-                if (settingInfo.goNextBout && !isReferee){
-                    btnSubRip.setVisibility(View.VISIBLE);
-                    btnSubCom.setVisibility(View.VISIBLE);
-//                    playerDB.child(playerKey).child("playerRip").setValue("");
-//                    playerDB.child(playerKey).child("votingRip").setValue("");
-                    //move rip to ground list
-//                    if (Integer.parseInt(tvNumEstablished.getText().toString()) >= Integer.parseInt(tvNumContested.getText().toString())){
+                if (settingInfo.goNextBout){
+//                    if (Float.valueOf(tvNumContested.getText().toString()) <= Float.valueOf(tvNumEstablished.getText().toString())) {
 //                        listGround += tvRip.getText().toString() + "\n";
 //                        tvListGround.setText(tvRip.getText().toString());
 //                    } else {
@@ -282,8 +302,14 @@ public class MainActivity extends AppCompatActivity {
 //                        tvListDrop.setText(tvRip.getText().toString());
 //                    }
                 }
+                if (settingInfo.goNextBout && !isReferee){
+                    //reset button for submitting
+                    btnSubRip.setVisibility(View.VISIBLE);
+                    btnSubCom.setVisibility(View.VISIBLE);
+                    numEstablished = 0;
+                    numContested = 0;
+                }
                 if (settingInfo.showList){
-                    dialAllList.setContentView(R.layout.dialog_all_list);
                     dialAllList.show();
                 } else {
                     dialAllList.dismiss();
@@ -356,9 +382,8 @@ public class MainActivity extends AppCompatActivity {
                 tvRip.setText(boutInfo.rip);
                 currentBoutNum = boutInfo.boutNumber;
                 boutPlayer = boutInfo.player;
-                if (playerName == boutPlayer){
+                if (tvPlayer.getText().toString().equals(boutPlayer)){
                     btnSubCom.setVisibility(View.INVISIBLE);
-
                 }
 //
 //                Float perGround = Float.valueOf((boutInfo.numGround / totPlayerNum) * 100);
@@ -366,9 +391,17 @@ public class MainActivity extends AppCompatActivity {
 //                if (boutInfo.player.length() != 0){
 //                    playBout(boutInfo.player);
 //                }
-//
-//                tvNumEstablished.setText(boutInfo.numEstablished.toString());
-//                tvNumContested.setText(boutInfo.numContested.toString());
+                Double perEst, perCon;
+                if (boutInfo.numEstablished == 0 && boutInfo.numContested == 0){
+                    perEst = 0.0;
+                    perCon = 0.0;
+                } else {
+                    perEst = Double.valueOf((boutInfo.numEstablished)/(boutInfo.numEstablished + boutInfo.numContested) * 100);
+                    perCon = Double.valueOf((boutInfo.numContested)/(boutInfo.numEstablished + boutInfo.numContested) * 100);
+                    Log.e("Hwayoung", perEst.toString());
+                }
+                tvNumEstablished.setText(String.format("%.1f", perEst));
+                tvNumContested.setText(String.format("%.1f", perCon));
             }
 
             @Override
@@ -376,17 +409,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    //setting for each bout
-    public void playBout(String currentPlayer){
-        if(tvPlayer.getText().toString() == currentPlayer){
-            btnSubCom.setVisibility(View.INVISIBLE);
-        } else {
-            btnSubCom.setVisibility(View.VISIBLE);
-        }
-        btnSubRip.setVisibility(View.INVISIBLE);
-
     }
 
 }
