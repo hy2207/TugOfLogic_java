@@ -23,15 +23,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
- * Purpose: straw poll for students (players)
+ * Purpose: straw poll for player
  */
 public class StrawpollActivity extends AppCompatActivity {
 
     private TextView tvMainClaim, tvPlayerName, tvRemainTime;
     private RadioGroup rg_strawPoll;
-    private Button btnSubmitStraw;
+    private Button btnSubmitStraw, btnSetTime;
 
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference mDatabase = firebaseDatabase.getReference();
@@ -46,7 +48,9 @@ public class StrawpollActivity extends AppCompatActivity {
     public Integer numStrawNot = 0;
     public String strawResult = "Convinced";
     public String playerKey;
-    CountDownTimer timer = null;
+//    CountDownTimer timer = null;
+    TimerTask timerTask;
+    Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,15 @@ public class StrawpollActivity extends AppCompatActivity {
         rg_strawPoll = findViewById(R.id.voteStrawPoll);
 
         btnSubmitStraw = findViewById(R.id.btnSubmitStraw);
+        btnSetTime = findViewById(R.id.btnAddTime);
+
+        //student doesn't need a set time button
+        btnSetTime.setVisibility(View.INVISIBLE);
+
+        if (getIntent().hasExtra("refereeName")){
+            btnSetTime.setVisibility(View.VISIBLE);
+            btnSubmitStraw.setVisibility(View.INVISIBLE);
+        }
 
         //voting
         rg_strawPoll.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -86,12 +99,9 @@ public class StrawpollActivity extends AppCompatActivity {
                 }
                 mainClaimDB.child("mc").child("numStrawCon").setValue(numStrawCon);
                 mainClaimDB.child("mc").child("numStrawNot").setValue(numStrawNot);
-                timer.cancel();
-                startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
+                btnSubmitStraw.setVisibility(View.INVISIBLE);
             }
         });
-
-
 
         getData();
     }
@@ -112,7 +122,7 @@ public class StrawpollActivity extends AppCompatActivity {
                     numStrawCon = mainClaim.numStrawCon;
                     numStrawNot = mainClaim.numStrawNot;
                 } catch (Exception e){
-                    tvMainClaim.setText("**Wait**" + "\n" + "Instructor has not set the Main Claim");
+                    tvMainClaim.setText("**Wait**" + "\n" + "Referee has not set the Main Claim");
                 }
             }
 
@@ -127,23 +137,60 @@ public class StrawpollActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DB_GameSetting votingMin = null;
                 votingMin = snapshot.getValue(DB_GameSetting.class);
+
+
                 try {
                     //get time from setting page
-                    String timeForm = getString(R.string.remain_time);
+                    if(timerTask != null){
+                        timerTask.cancel();
+                        timerTask = null;
+                    }
 
-                    timer = new CountDownTimer(votingMin.votingTime * 60 * 1000, 1000) {
+                    //set timer
+                    final int[] votingCount = {votingMin.votingTime};
 
-                        public void onTick(long millisUntilFinished) {
-//                tvRemainTime.setText(String.format(timeForm, millisUntilFinished, ));
-                            tvRemainTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+                    timerTask = new TimerTask() {
+
+                        @Override
+                        public void run() {
+                            votingCount[0] -= 1;
+                            tvRemainTime.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvRemainTime.setText("seconds remaining: " + votingCount[0]);
+                                }
+                            });
+                            if(votingCount[0] == 0){
+                                timerTask.cancel();
+                                startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
+                                if (!getIntent().hasExtra("refereeName")) {
+                                    playerDB.child(playerKey).child("strawResult").setValue(strawResult);
+                                }
+                            }
+
                         }
+                    };
+                    timer.schedule(timerTask, 0, 1000);
 
-                        public void onFinish() {
-                            tvRemainTime.setText("time is over!");
-                            startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
-                            playerDB.child(playerKey).child("strawResult").setValue(strawResult);
+                    btnSetTime.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            settingDB.child("votingTime").setValue(votingCount[0] + 15);
                         }
-                    }.start();
+                    });
+
+//                    timer = new CountDownTimer(votingMin.votingTime * 60 * 1000, 1000) {
+//
+//                        public void onTick(long millisUntilFinished) {
+//                            tvRemainTime.setText("seconds remaining: " + millisUntilFinished / 1000);
+//                        }
+//
+//                        public void onFinish() {
+//                            tvRemainTime.setText("time is over!");
+//                            startActivity(new Intent(StrawpollActivity.this, StrawpollResultActivity.class));
+//                            playerDB.child(playerKey).child("strawResult").setValue(strawResult);
+//                        }
+//                    }.start();
                 } catch (Exception e){
                     tvRemainTime.setText("**Wait**" + "\n" + "Instructor has not set the Time");
                 }
@@ -160,12 +207,12 @@ public class StrawpollActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DB_Player playerInfo = null;
-//                for (DataSnapshot child : snapshot.getChildren()){
                     playerInfo = snapshot.getValue(DB_Player.class);
 //                }
-                tvPlayerName.setText("Welcome, " + playerInfo.name + "\n" + "Player Number: " + playerInfo.numPlayer);
-            }
+//                tvPlayerName.setText("Welcome, " + playerInfo.name + "\n" + "Player Number: " + playerInfo.numPlayer);
+                tvPlayerName.setText("Welcome, " + playerInfo.name + "\n");
 
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

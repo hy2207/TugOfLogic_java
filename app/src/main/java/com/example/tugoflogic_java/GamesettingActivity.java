@@ -41,7 +41,7 @@ public class GamesettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gamesetting);
 
         instructorName = findViewById(R.id.instructorName);
-        editTxtTime = findViewById(R.id.editTxtTime);
+//        editTxtTime = findViewById(R.id.editTxtTime);
         btnGoToGameMain = findViewById(R.id.btnGoToGameMain);
         mainClaim = findViewById(R.id.editTxtMC);
         priorMC = findViewById(R.id.tvPriorMC);
@@ -49,7 +49,7 @@ public class GamesettingActivity extends AppCompatActivity {
         //get instructor name from login page
         final Intent intent = getIntent();
         final String name = intent.getStringExtra("instructorName");
-        instructorName.setText("Welcome Instructor, " + name);
+        instructorName.setText("Welcome Referee, " + name);
 
         //list of prior mc
         mainClaimDB.addValueEventListener(new ValueEventListener() {
@@ -74,42 +74,22 @@ public class GamesettingActivity extends AppCompatActivity {
         btnGoToGameMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                votingTime = Integer.parseInt(editTxtTime.getText().toString());
-//                DateFormat format = new SimpleDateFormat("mm:ss");
-//                try {
-//                    Date date = format.parse(text);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                if(!text.equalsIgnoreCase("")) {
-//                    final int sec = Integer.valueOf(text);
-//                    CountDownTimer countDownTimer = new CountDownTimer(sec * 1000, 1000) {
-//                        @Override
-//                        public void onTick(long millils) {
-//                            countdownTxt.setText("Minutes : " +  new SimpleDateFormat("mm:ss").format(new Date(millils)));
-//                        }
-//                        @Override
-//                        public void onFinish() {
-//                            countdownTxt.setText("Finished");
-//                            startActivity(new Intent(getApplicationContext(), StrawpollResultActivity.class));
-//                        }
-//                    }.start();
-//                }
 
                 //db update
                 DB_MainClaim settingMC = new DB_MainClaim(mainClaim.getText().toString(), 0, 0,0,0);
                 mainClaimDB.child("mc").setValue(settingMC);
                 //voting time update to db
-                gameSettingDB.child("votingTime").setValue(votingTime);
+                gameSettingDB.child("votingTime").setValue(60);
+                gameSettingDB.child("endGame").setValue(false);
+                gameSettingDB.child("goNextBout").setValue(false);
+                gameSettingDB.child("showList").setValue(false);
+                gameSettingDB.child("showComment").setValue(false);
+                gameSettingDB.child("startGame").setValue(false);
 
-                Intent intentS = new Intent(getApplicationContext(), StrawpollResultActivity.class);
-                intentS.putExtra("instructorName", name);
+                Intent intentS = new Intent(getApplicationContext(), StrawpollActivity.class);
+                intentS.putExtra("refereeName", name);
                 startActivity(intentS);
             }
         });
-
-
-
-
     }
 }

@@ -35,6 +35,8 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,27 +72,55 @@
                 android:layout_weight="3"
                 android:orientation="vertical">
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartResult"
+<!--                <com.github.mikephil.charting.charts.BarChart-->
+<!--                    android:id="@+id/mainBarChart"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:rotation="90"/>-->
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvNumTrueRip"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginLeft="2dp"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:text="Established: " />-->
+                    <TextView
+                        android:id="@+id/tvNumEstRipTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="1"
+                        android:text="Established: " />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvNumFalseRip"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginLeft="2dp"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:background="#FFFFFF"-->
-<!--                    android:text="Contested: " />-->
+                    <TextView
+                        android:id="@+id/tvNumEstablished"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvNumConRipTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="2dp"
+                        android:text="Contested: " />
+
+                    <TextView
+                        android:id="@+id/tvNumConRip"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
             </LinearLayout>
         </LinearLayout>
 
@@ -117,59 +147,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/holo_blue_dark"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/ground"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="GROUND"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtViewGround"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/holo_red_light"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/drop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="DROP"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtViewDrop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -181,7 +158,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txtViewPerSufficient"
+                android:id="@+id/tvPerSufficient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
@@ -194,8 +171,45 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/btnChooseRip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@android:color/holo_orange_light"
+                android:text="Choose RiP" />
+
+            <Button
+                android:id="@+id/btnReRip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="?android:attr/colorFocusedHighlight"
+                android:text="Re-assign" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <ToggleButton
+                android:id="@+id/btnToggleCom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorAccent"
+                android:textOff="show comment"
+                android:textOn="hide comment"
+                android:text="Comment" />
 
             <Button
                 android:id="@+id/btnStartBout"
@@ -204,8 +218,20 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="Next Bout" />
+
+            <ToggleButton
+                android:id="@+id/btnShowList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:textOff="show list"
+                android:textOn="hide list"
                 android:background="@color/colorAccent"
-                android:text="Start Next Bout" />
+                android:text="Show List" />
 
             <Button
                 android:id="@+id/btnEndGame"
@@ -214,14 +240,17 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@color/colorAccent"
+                android:background="@color/colorPrimary"
                 android:text="End Game" />
 
         </LinearLayout>
 
+
+
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutPlayer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
@@ -232,17 +261,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/mainPlayerNum"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:background="@android:color/black"
-                android:gravity="center"
-                android:text="0"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/mainPlayerName"
@@ -305,7 +323,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@android:color/holo_blue_dark"
-                        android:checked="true"
+                        android:checked="false"
                         android:scrollbarSize="4dp"
                         android:text="ESTABLISHED"
                         android:textSize="10sp" />
@@ -368,7 +386,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:checked="true"
+                        android:checked="false"
                         android:text="No"
                         android:textSize="10sp" />
                 </RadioGroup>
@@ -401,7 +419,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="100"
-            android:hint="Player's RiP"
+            android:hint="Enter your Reason to Play"
             android:inputType="textPersonName"
             android:textSize="12sp" />
 
