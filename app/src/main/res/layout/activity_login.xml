@@ -40,7 +40,8 @@
             android:id="@+id/btnStudent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student" />
+            android:text="Student"
+            android:checked="true"/>
 
     </RadioGroup>
 

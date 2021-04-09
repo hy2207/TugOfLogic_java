@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                     assert registerUser != null;
                     String userId = registerUser.getUid();
                     updatePlayer(userId,email,name, strawResult,finalResult,numPlayer,votingRip,ground,comment);
-                    playerDB.child(String.valueOf(numPlayer));
+                    playerDB.child(String.valueOf(numPlayer+1));
                     startActivity(intent);
                 }else if (task.isSuccessful() && !isStudent){
                     Toast.makeText(LoginActivity.this, "Instructor Logged in.", Toast.LENGTH_SHORT).show();
