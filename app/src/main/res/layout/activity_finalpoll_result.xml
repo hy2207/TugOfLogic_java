@@ -21,16 +21,15 @@
 
 
     <EditText
-        android:id="@+id/txtViewPollResultMC"
+        android:id="@+id/editTxtFinalComment"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
+        android:background="#FFCA28"
         android:gravity="center_horizontal|center_vertical"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -45,7 +44,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:background="@color/colorPrimaryDark"
-        android:text="WHY DID YOU CHANGED THE VOTE?"
+        android:text="WHAT MADE YOU CHANGED THE VOTE? \n COMMNET BELOW"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -62,10 +61,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewPollResultMC" />
+        app:layout_constraintTop_toBottomOf="@+id/editTxtFinalComment" />
 
     <Button
-        android:id="@+id/btnStartGame"
+        android:id="@+id/btnSummitFinalCom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"

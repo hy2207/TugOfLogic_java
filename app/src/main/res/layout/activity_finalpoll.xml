@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".FinalpollActivity">
     <TextView
-        android:id="@+id/txtViewPlayerName"
+        android:id="@+id/txtViewFinalPlayerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -32,10 +32,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewPlayerName" />
+        app:layout_constraintTop_toBottomOf="@+id/txtViewFinalPlayerName" />
 
     <TextView
-        android:id="@+id/txtViewGetMc"
+        android:id="@+id/txtViewFinalGetMc"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
@@ -61,37 +61,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtViewGetMc" />
-
+        app:layout_constraintTop_toBottomOf="@+id/txtViewFinalGetMc" />
 
 
     <RadioGroup
-        android:id="@+id/voteStrawPoll"
+        android:id="@+id/voteFinalPoll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
         <RadioButton
-            android:id="@+id/strawConvinced"
-            android:layout_width="match_parent"
+            android:id="@+id/finalStillConvinced"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Convinced" />
+            android:text="Still Convinced" />
 
         <RadioButton
-            android:id="@+id/strawNot"
-            android:layout_width="match_parent"
+            android:id="@+id/finalNewConvinced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Newly Convinced" />
+
+        <RadioButton
+            android:id="@+id/finalNotYetPer"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No Longer Persuaded" />
     </RadioGroup>
 
-
     <Button
-        android:id="@+id/btnSubmitStraw"
+        android:id="@+id/btnSubmitFinal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="88dp"
@@ -100,16 +105,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/voteStrawPoll" />
+        app:layout_constraintTop_toBottomOf="@+id/voteFinalPoll" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Final poll page"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView4"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Final poll page"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.503"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.119" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

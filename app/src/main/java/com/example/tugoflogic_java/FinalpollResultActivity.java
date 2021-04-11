@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
@@ -25,6 +28,9 @@ import java.util.ArrayList;
 public class FinalpollResultActivity extends AppCompatActivity {
 
 
+    private Button btnSummitCom;
+    private EditText finalComment;
+
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference mainClaimDB = firebaseDatabase.getReference("MainClaim");
     DatabaseReference playerDB = firebaseDatabase.getReference("Player");
@@ -42,8 +48,10 @@ public class FinalpollResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_finalpoll_result);
 
         barChart = findViewById(R.id.barChartFinalResult);
+        btnSummitCom = findViewById(R.id.btnSummitFinalCom);
+
         getData();
-        //load total number of player
+
         playerDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -55,6 +63,17 @@ public class FinalpollResultActivity extends AppCompatActivity {
 
             }
         });
+
+        btnSummitCom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //db update player comment
+               // playerDB.child("comment").setValue()
+            }
+        });
+
+
+
     }
 
     //load Data from firebase
