@@ -76,6 +76,7 @@ public class RiplistActivity extends AppCompatActivity {
         adapter = new RipAdapter(playerRipList, getBaseContext());
         recyclerView.setAdapter(adapter);
 
+        //choose rip
         adapter.setOnItemClickListener(new RipAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
@@ -89,5 +90,6 @@ public class RiplistActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 }

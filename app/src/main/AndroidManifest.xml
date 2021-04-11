@@ -9,8 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RiplistActivity"
-            android:screenOrientation="landscape"></activity>
+        <activity android:name=".ListActivity"></activity>
+        <activity android:name=".ListDialog" />
+        <activity
+            android:name=".RiplistActivity"
+            android:screenOrientation="landscape" />
         <activity android:name=".FinalpollResultActivity" />
         <activity android:name=".FinalpollActivity" />
         <activity android:name=".GamesettingActivity" />

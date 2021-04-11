@@ -10,6 +10,10 @@ public class DB_Rip {
     public String rip;
     public Boolean isGround;
 
+    public DB_Rip(){
+
+    }
+
     public DB_Rip(Integer boutNumber, String playerName, String rip, Boolean isGround) {
         this.boutNumber = boutNumber;
         this.playerName = playerName;

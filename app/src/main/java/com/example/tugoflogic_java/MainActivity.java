@@ -176,6 +176,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //re assign rip button (referee)
+        btnReRip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent reIntent = new Intent(getApplicationContext(), ListActivity.class);
+                reIntent.putExtra("boutNum", currentBoutNum);
+                startActivity(reIntent);
+            }
+        });
+
         //rip voting
         rg_voteRipe.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
