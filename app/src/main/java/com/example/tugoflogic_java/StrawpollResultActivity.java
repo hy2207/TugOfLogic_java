@@ -124,10 +124,23 @@ public class StrawpollResultActivity extends AppCompatActivity {
                 entries.add(new BarEntry(1.0f, mainClaim.numStrawCon));
                 entries.add(new BarEntry(2.0f, mainClaim.numStrawNot));
 
-                BarDataSet barDataSet = new BarDataSet(entries, "Number of Student");
+                BarDataSet barDataSet = new BarDataSet(entries, "Convinced (Left)");
+                BarDataSet barDataSet1 = new BarDataSet(entries, "Not Yet Persuaded (Right)");
                 initBarDataSet(barDataSet);
-                BarData data = new BarData(barDataSet);
+                initBarDataSet(barDataSet1);
+
+                BarData data = new BarData(barDataSet,barDataSet1);
                 data.setBarWidth(0.3f);
+
+                YAxis leftAxis = barChart.getAxisLeft();
+                leftAxis.setDrawGridLines(false);
+                leftAxis.setSpaceTop(30f);
+                Description description = new Description();
+                description.setEnabled(false);
+                barChart.animateY(1000);
+                barChart.setDescription(description);
+                barChart.getAxisRight().setEnabled(false);
+                barChart.getXAxis().setDrawLabels(false);
                 barChart.setData(data);
                 barChart.invalidate();
             }
@@ -161,25 +174,23 @@ public class StrawpollResultActivity extends AppCompatActivity {
         //Changing the color of the bar
         barDataSet.setColor(Color.parseColor("#BF360C"));
         //Setting the size of the form in the legend
-        barDataSet.setFormSize(15f);
-        //showing the value of the bar, default true if not set
-        barDataSet.setDrawValues(false);
-        //setting the text size of the value of the bar
-//        barDataSet.setValueTextSize(15f);
-        //remove the description label text located at the lower right corner
-
-        //setting yaxis
-        YAxis left = barChart.getAxisLeft();
-        left.setAxisMinimum(0f);
-        Description description = new Description();
-        description.setEnabled(false);
-        barChart.setDescription(description);
-        //hide labels of the axis
-        barChart.getXAxis().setDrawLabels(false);
+//        barDataSet.setFormSize(15f);
+//        //showing the value of the bar, default true if not set
+//        barDataSet.setDrawValues(false);
+//        //setting the text size of the value of the bar
+////        barDataSet.setValueTextSize(15f);
+//        //remove the description label text located at the lower right corner
+//
+//        //setting yaxis
+//        YAxis left = barChart.getAxisLeft();
+//        left.setAxisMinimum(0f);
+//        Description description = new Description();
+//        description.setEnabled(false);
+//        barChart.setDescription(description);
+//        //hide labels of the axis
+//        barChart.getXAxis().setDrawLabels(false);
 
         //setting animation for y-axis, the bar will pop up from 0 to its value within the time we set
         barChart.animateY(1000);
-
-
     }
 }
