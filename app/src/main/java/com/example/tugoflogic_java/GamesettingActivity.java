@@ -77,7 +77,7 @@ public class GamesettingActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //db update
-                DB_MainClaim settingMC = new DB_MainClaim(mainClaim.getText().toString(), 0, 0,0,0, 0);
+                DB_MainClaim settingMC = new DB_MainClaim(mainClaim.getText().toString(), 0, 0,0,0,0,0);
                 mainClaimDB.child("mc").setValue(settingMC);
                 //voting time update to db
                 gameSettingDB.child("votingTime").setValue(60);

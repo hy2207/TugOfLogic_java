@@ -9,19 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".ListActivity"
             android:screenOrientation="landscape" />
+=======
+        <activity android:name=".FinalPollGraph"></activity>
+        <activity android:name=".ListActivity" />
+>>>>>>> 0a2a43edf3b38b1bb29893555ac249a888157c3a
         <activity android:name=".ListDialog" />
         <activity
             android:name=".RiplistActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".FinalpollResultActivity" />
-        <activity android:name=".FinalpollActivity" />
+        <activity android:name=".FinalpollActivity">
+        </activity>
         <activity android:name=".GamesettingActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
