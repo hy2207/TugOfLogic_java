@@ -57,11 +57,12 @@ public class GamesettingActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DB_MainClaim db_mainClaim = null;
                 String listMC = "";
-                for (DataSnapshot child : snapshot.getChildren()){
+                for (DataSnapshot child : snapshot.getChildren()) {
                     db_mainClaim = child.getValue(DB_MainClaim.class);
-                    listMC += db_mainClaim.mc + "\n";
                 }
-                priorMC.setText(listMC);
+                if (db_mainClaim.mc.length() != 0){
+                    priorMC.setText(db_mainClaim.mc);
+                }
             }
 
             @Override
@@ -76,7 +77,7 @@ public class GamesettingActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //db update
-                DB_MainClaim settingMC = new DB_MainClaim(mainClaim.getText().toString(), 0, 0,0,0);
+                DB_MainClaim settingMC = new DB_MainClaim(mainClaim.getText().toString(), 0, 0,0,0, 0);
                 mainClaimDB.child("mc").setValue(settingMC);
                 //voting time update to db
                 gameSettingDB.child("votingTime").setValue(60);
@@ -85,6 +86,9 @@ public class GamesettingActivity extends AppCompatActivity {
                 gameSettingDB.child("showList").setValue(false);
                 gameSettingDB.child("showComment").setValue(false);
                 gameSettingDB.child("startGame").setValue(false);
+                gameSettingDB.child("isReassign").setValue(false);
+                gameSettingDB.child("voteGround").setValue(false);
+                gameSettingDB.child("goMain").setValue(false);
 
                 Intent intentS = new Intent(getApplicationContext(), StrawpollActivity.class);
                 intentS.putExtra("refereeName", name);

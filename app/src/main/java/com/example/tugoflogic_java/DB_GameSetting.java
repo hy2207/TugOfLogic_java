@@ -10,42 +10,35 @@ public class DB_GameSetting {
     public boolean showList = false;
     public boolean showComment = false;
     public boolean startGame = false;
+    public boolean isReassign = false;
+    public boolean voteGround = false;
+    public boolean goMain = false;
 
-    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList, boolean showComment, boolean startGame) {
+    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList, boolean showComment, boolean startGame, boolean isReassign, boolean voteGround, boolean goMain) {
         this.votingTime = votingTime;
         this.endGame = endGame;
         this.goNextBout = goNextBout;
         this.showList = showList;
         this.showComment = showComment;
         this.startGame = startGame;
+        this.isReassign = isReassign;
+        this.voteGround = voteGround;
+        this.goMain = goMain;
+    }
+
+    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList, boolean showComment, boolean startGame, boolean isReassign, boolean voteGround) {
+        this.votingTime = votingTime;
+        this.endGame = endGame;
+        this.goNextBout = goNextBout;
+        this.showList = showList;
+        this.showComment = showComment;
+        this.startGame = startGame;
+        this.isReassign = isReassign;
+        this.voteGround = voteGround;
     }
 
     public DB_GameSetting(){
 
     }
 
-    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList, boolean showComment) {
-        this.votingTime = votingTime;
-        this.endGame = endGame;
-        this.goNextBout = goNextBout;
-        this.showList = showList;
-        this.showComment = showComment;
-    }
-
-    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout, boolean showList) {
-        this.votingTime = votingTime;
-        this.endGame = endGame;
-        this.goNextBout = goNextBout;
-        this.showList = showList;
-    }
-
-    public DB_GameSetting(int votingTime, boolean endGame, boolean goNextBout) {
-        this.votingTime = votingTime;
-        this.endGame = endGame;
-        this.goNextBout = goNextBout;
-    }
-
-    public DB_GameSetting(int votingTime) {
-        this.votingTime = votingTime;
-    }
 }

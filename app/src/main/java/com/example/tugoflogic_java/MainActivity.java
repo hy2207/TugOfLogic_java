@@ -49,24 +49,15 @@ public class MainActivity extends AppCompatActivity {
     TextView tvMainClaim, tvPlayer, tvPlayerStraw, tvRipTitle,
             tvRip, tvNumEstablished, tvNumContested, tvPerGround, tvListGround, tvListDrop,
             tvComments;
-    Button btnStartBout, btnEndGame, btnSubRip, btnSubCom, btnChooseRip, btnReRip;
-    ToggleButton btnToggleCom, btnShowList;
+    Button btnStartBout, btnEndGame, btnSubRip, btnSubCom, btnChooseRip, btnReRip, btnShowList;
+    ToggleButton btnToggleCom;
     EditText editTxtRip;
     LinearLayout linearLayoutPlayer;
     Boolean isReferee;
 
     public String txtRipTitle, playerKey, votingRip, votingGround, listGround ="", listDrop="", boutPlayer, playerName;
-    public Integer currentBoutNum = 1, totPlayerNum = 1, numContested = 0, numEstablished = 0, numGround = 0;
+    public Integer currentBoutNum = 1, numContested = 0, numEstablished = 0, numGround = 0;
     public RadioGroup rg_voteRipe, rg_voteGround;
-
-
-    //Dialog
-    Dialog dialAllList;
-
-    //bar chart
-    BarChart barChart;
-    int[] colorArray = new int[]{Color.BLUE, Color.RED};
-    ArrayList<BarEntry> entries = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
         playerKey = currentPlayer.getUid();
 
-        Intent mIntent = getIntent();
-        totPlayerNum = mIntent.getExtras().getInt("totNum");
-
         //delete voting time here to prevent to back to result page
         settingDB.child("votingTime").removeValue();
         //delete start game here too prevent keeping reloading
         settingDB.child("startGame").removeValue();
+        settingDB.child("goMain").setValue(false);
 
         tvMainClaim = findViewById(R.id.mainMC);
         tvPlayer = findViewById(R.id.mainPlayerName);
@@ -97,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         tvRip = findViewById(R.id.txtViewRip);
         tvNumEstablished = findViewById(R.id.tvNumEstablished);
         tvNumContested = findViewById(R.id.tvNumConRip);
-        rg_voteGround = findViewById(R.id.voteGround);
         tvPerGround = findViewById(R.id.tvPerSufficient);
 
 
@@ -112,19 +100,17 @@ public class MainActivity extends AppCompatActivity {
 
         linearLayoutPlayer = findViewById(R.id.layoutPlayer);
 
-        dialAllList = new Dialog(MainActivity.this);
-        View dialView = getLayoutInflater().inflate(R.layout.dialog_all_list, null);
-        tvListGround = dialView.findViewById(R.id.txtViewGround);
-        tvListDrop = dialView.findViewById(R.id.txtViewDrop);
-
-        dialAllList.setContentView(R.layout.dialog_all_list);
-
 //        tvListGround = dialAllList.findViewById(R.id.txtViewGround);
 //        tvListDrop = dialAllList.findViewById(R.id.txtViewDrop);
 //                findViewById(R.id.txtViewGround);
 //        tvListDrop = findViewById(R.id.txtViewDrop);
 
         getData();
+
+        if (getIntent().hasExtra("perGround")){
+            Double perGround = getIntent().getDoubleExtra("perGround", 0);
+            tvPerGround.setText(String.format("%.1f",perGround));
+        }
 
         //toggle button for comment
         btnToggleCom.setOnCheckedChangeListener(
@@ -141,18 +127,12 @@ public class MainActivity extends AppCompatActivity {
         );
 
         //toggle button for list
-        btnShowList.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked){
-                            settingDB.child("showList").setValue(true);
-                        } else {
-                            settingDB.child("showList").setValue(false);
-                        }
-                    }
-                }
-        );
+        btnShowList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingDB.child("showList").setValue(true);
+            }
+        });
 
 
         //submit Rip (student)
@@ -161,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String playerRip = editTxtRip.getText().toString();
                 playerDB.child(playerKey).child("playerRip").setValue(playerRip);
-                btnSubRip.setVisibility(View.INVISIBLE); //after choosing rip they can't
+                btnSubRip.setVisibility(View.INVISIBLE); //after entering rip they can't re-enter
                 editTxtRip.setText(""); //reset
             }
         });
@@ -180,8 +160,10 @@ public class MainActivity extends AppCompatActivity {
         btnReRip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                settingDB.child("isReassign").setValue(true);
                 Intent reIntent = new Intent(getApplicationContext(), ListActivity.class);
                 reIntent.putExtra("boutNum", currentBoutNum);
+                reIntent.putExtra("isReferee", isReferee);
                 startActivity(reIntent);
             }
         });
@@ -194,17 +176,6 @@ public class MainActivity extends AppCompatActivity {
                     votingRip = "Established";
                 } else {
                     votingRip = "Contested";
-                }
-            }
-        });
-        //ground voting
-        rg_voteGround.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.groundYes){
-                    votingGround = "Yes";
-                } else {
-                    votingGround = "No";
                 }
             }
         });
@@ -312,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 //                        tvListDrop.setText(tvRip.getText().toString());
 //                    }
                 }
-                if (settingInfo.goNextBout && !isReferee){
+                if (settingInfo.goNextBout && !isReferee && !settingInfo.isReassign){
                     //reset button for submitting
                     btnSubRip.setVisibility(View.VISIBLE);
                     btnSubCom.setVisibility(View.VISIBLE);
@@ -320,9 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     numContested = 0;
                 }
                 if (settingInfo.showList){
-                    dialAllList.show();
-                } else {
-                    dialAllList.dismiss();
+                    startActivity(new Intent(getApplicationContext(), ListActivity.class));
                 }
                 //Displaying comments
                 if (settingInfo.showComment){
@@ -406,9 +375,8 @@ public class MainActivity extends AppCompatActivity {
                     perEst = 0.0;
                     perCon = 0.0;
                 } else {
-                    perEst = Double.valueOf((boutInfo.numEstablished)/(boutInfo.numEstablished + boutInfo.numContested) * 100);
-                    perCon = Double.valueOf((boutInfo.numContested)/(boutInfo.numEstablished + boutInfo.numContested) * 100);
-                    Log.e("Hwayoung", perEst.toString());
+                    perEst = Double.valueOf((boutInfo.numEstablished * 100)/(boutInfo.numEstablished + boutInfo.numContested));
+                    perCon = Double.valueOf((boutInfo.numContested * 100)/(boutInfo.numEstablished + boutInfo.numContested));
                 }
                 tvNumEstablished.setText(String.format("%.1f", perEst));
                 tvNumContested.setText(String.format("%.1f", perCon));

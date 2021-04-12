@@ -221,15 +221,13 @@
                 android:background="@color/colorPrimary"
                 android:text="Next Bout" />
 
-            <ToggleButton
+            <Button
                 android:id="@+id/btnShowList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:textOff="show list"
-                android:textOn="hide list"
                 android:background="@color/colorAccent"
                 android:text="Show List" />
 
@@ -350,46 +348,10 @@
                 android:inputType="textPersonName"
                 android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/txtVoteGround"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/darker_gray"
-                android:text="Have these GROUNDS become sufficient to prove the MC?"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <RadioGroup
-                    android:id="@+id/voteGround"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/groundYes"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:checked="false"
-                        android:scrollbarSize="4dp"
-                        android:text="Yes"
-                        android:textSize="10sp" />
-
-                    <RadioButton
-                        android:id="@+id/groundNo"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:checked="false"
-                        android:text="No"
-                        android:textSize="10sp" />
-                </RadioGroup>
 
                 <Button
                     android:id="@+id/btnSubCom"

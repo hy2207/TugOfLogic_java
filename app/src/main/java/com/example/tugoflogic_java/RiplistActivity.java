@@ -34,7 +34,6 @@ public class RiplistActivity extends AppCompatActivity {
     RipAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
 
-    String playerKey;
     Integer boutNum;
     DB_Player selectRip;
 
@@ -43,10 +42,7 @@ public class RiplistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_riplist);
 
-        playerKey = currentPlayer.getUid();
         boutNum = getIntent().getIntExtra("boutNum", 1);
-
-
         recyclerView = findViewById(R.id.rvRip);
         layoutManager = new LinearLayoutManager(getBaseContext());
         recyclerView.setLayoutManager(layoutManager);

@@ -117,6 +117,7 @@ public class StrawpollResultActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DB_MainClaim mainClaim = null;
+                entries.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     mainClaim = child.getValue(DB_MainClaim.class);
                 }
